@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?  @unique
+  bio       String?
+  posts     Post[]
+  profileImage String?
+  password  String
+  refreshToken String?
+  // на кого подписан этот пользователь
+  following    Follow[] @relation("follower")
+  // кто подписан на этого пользователя
+  followers    Follow[] @relation("following")
+  comments  Comment[]
+  likes      Like[] 
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  title     String
+  content   String
+  published Boolean  @default(false)
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  comments  Comment[]
+  images    PostImage[]
+  likes     Like[] 
+}
+
+model Follow {
+  // кто подписывается
+  follower    User     @relation("follower", fields: [followerId], references: [id], onDelete: Cascade)
+  followerId  String
+  // на кого подписываются
+  following   User     @relation("following", fields: [followingId], references: [id], onDelete: Cascade)
+  followingId String
+  createdAt   DateTime @default(now())
+
+  @@id([followerId, followingId])   // составной PK — заодно запрещает дубли подписок
+  @@index([followingId])            // для быстрого поиска подписчиков
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  authorId  String
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  images    CommentImage[]
+
+  createdAt DateTime @default(now())
+
+  @@index([postId])   // быстро достать все комментарии поста
+  @@index([authorId]) // быстро достать все комментарии пользователя
+}
+
+model PostImage {
+  id        String   @id @default(uuid())
+  url       String
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([postId])
+}
+
+model CommentImage {
+  id        String   @id @default(uuid())
+  url       String
+  commentId String
+  comment   Comment  @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([commentId])
+}
+
+model Like {
+  id        String @id @default(uuid())
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  likeById  String
+  likeBy    User     @relation(fields: [likeById], references: [id], onDelete: Cascade) 
+}
