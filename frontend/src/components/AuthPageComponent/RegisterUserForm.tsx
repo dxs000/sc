@@ -43,7 +43,7 @@ const RegisterUserForm = () => {
         )}  
       </div>
       <div className="flex flex-col gap-1 md:gap-2 mx-6 mb-4">
-        <button type="submit" className="bg-[#9929EA] text-white md:py-2 rounded-xl hover:cursor-pointer">Register</button>
+        <button type="submit" className="bg-[#9929EA] text-white py-2 rounded-xl hover:cursor-pointer">Register</button>
       </div>
     </form>
   )
