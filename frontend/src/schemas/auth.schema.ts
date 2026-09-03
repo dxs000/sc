@@ -4,7 +4,7 @@ export const registerUserSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters"),
     email: z.email("Invalid e-mail address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    profilePictiure: z.instanceof(FileList)
+    profileImage: z.instanceof(FileList)
     .optional()
     .refine((files) => !files || files.length === 1, "Only one profile picture is allowed")
 });

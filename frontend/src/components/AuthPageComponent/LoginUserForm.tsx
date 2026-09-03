@@ -23,7 +23,7 @@ const LoginUserForm = () => {
       </div>
       <div className="flex flex-col md:gap-2 mx-6 mb-4">
         <label className="text-[#9929EA]">Password</label>
-        <input type="pasword" {...register("password")} className="text-white border border-white md:p-2 rounded-xl" placeholder="Enter your password" />
+        <input type="password" {...register("password")} className="text-white border border-white md:p-2 rounded-xl" placeholder="Enter your password" />
          {errors.password && (
             <p className="text-red-400">{errors.password.message}</p>
         )}
