@@ -6,10 +6,17 @@ import type { LoginUserFormData } from "../../schemas/auth.schema"
 import { loginUser } from "../../services/auth.service"
 import { toast } from "../ui/Toast"
 import Spinner from "../ui/Spinner"
+import { useDispatch} from "react-redux";
+import { setUser } from "../../store/slices/authSlice";
+import { useNavigate } from "react-router-dom"
+
 
 const LoginUserForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const {register, handleSubmit, reset, formState: { errors }} = useForm<LoginUserFormData>({
     resolver: zodResolver(loginUserSchema)
@@ -19,9 +26,12 @@ const LoginUserForm = () => {
     try {
       setLoading(true);
       setServerError(null);
-      await loginUser(data);
+      const response = await loginUser(data);
+      console.log(response.data);
+      dispatch(setUser(response.data.user));
       toast.success("Logged in successfully");
       reset();
+      navigate("/");
     } catch (error: any) {
       const message = error?.message || "Login failed";
       setServerError(message);

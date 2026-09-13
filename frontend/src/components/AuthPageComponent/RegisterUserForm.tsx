@@ -5,11 +5,17 @@ import type { RegisterUserFormData } from "../../schemas/auth.schema"
 import { useForm } from "react-hook-form";
 import { registerUser } from "../../services/auth.service";
 import { toast } from "../ui/Toast";
-import Spinner from "../ui/Spinner"
+import Spinner from "../ui/Spinner";
+import { useNavigate } from "react-router-dom"
+import { useDispatch} from "react-redux";
+import { setUser } from "../../store/slices/authSlice";
 
 const RegisterUserForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {register, handleSubmit, reset, formState: { errors, isSubmitting }} = useForm<RegisterUserFormData>({
       resolver: zodResolver(registerUserSchema)
@@ -21,10 +27,11 @@ const RegisterUserForm = () => {
       setLoading(true);
       setServerError(null);
       const response = await registerUser(data);
+      dispatch(setUser(response.data.user));
       console.log("Regsitered", response);
       toast.success("Account Created Successfully");
       reset();
-      // TODO: редирект после успешной регистрации
+      navigate("/");
       } catch (err:any) {
         setServerError(err.message);
         toast.error(err.message);

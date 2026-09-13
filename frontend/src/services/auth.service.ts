@@ -25,3 +25,8 @@ export const loginUser = async (data: LoginUserFormData) => {
     const response = await api.post("/users/login", payload);
     return response.data;
 };
+
+export const getCurrentUser = async() => {
+    const response = await api.get("/users/current-user");
+    return response.data;
+}
