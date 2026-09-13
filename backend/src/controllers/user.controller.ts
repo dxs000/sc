@@ -43,8 +43,6 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
     throw new ApiError(400, "Password and confirm password should be same");
   }
 
-  // Ищем только по реально переданным полям, чтобы { name: undefined }
-  // не превратился в пустой фильтр, матчащий любого пользователя.
   const conditions: Array<{ email: string } | { name: string }> = [];
   if (email) conditions.push({ email });
   if (username) conditions.push({ name: username });
@@ -57,8 +55,6 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
     throw new ApiError(409, "User already exists");
   }
 
-  // Загружаем картинку только после успешной валидации,
-  // чтобы не заливать файл при заведомо провальном запросе.
   let profileImageUrl = "";
   if (req.file?.path) {
     profileImageUrl = await uploadImageToStorage(req.file.path);
@@ -90,7 +86,7 @@ export const registerUser = asyncHandler(async (req: Request, res: Response) => 
     .json(
       new ApiResponse(
         201,
-        { success: true, user, accessToken, refreshToken },
+        { user, accessToken, refreshToken },
         "User registered successfully"
       )
     );
@@ -110,13 +106,10 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   if (email) conditions.push({ email });
   if (username) conditions.push({ name: username });
 
-  // Без select — объект полный, поэтому computed-поле isPasswordCorrect доступно.
   const existingUser = await prisma.user.findFirst({
     where: { OR: conditions },
   });
 
-  // Одинаковый ответ на "нет пользователя" и "неверный пароль",
-  // чтобы не подсказывать атакующему, какие аккаунты существуют.
   if (!existingUser || !(await existingUser.isPasswordCorrect(password))) {
     throw new ApiError(401, "Invalid credentials");
   }
@@ -137,7 +130,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     .json(
       new ApiResponse(
         200,
-        { success: true, user: loggedInUser, accessToken, refreshToken },
+        { user: loggedInUser, accessToken, refreshToken },
         "User login successfully"
       )
     );
@@ -145,7 +138,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
 
 export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
   const userId = req.user?.id;
-  const loggedOutUser = await prisma.user.update({
+  await prisma.user.update({
     where: { id: userId },
     data: { refreshToken:"" },
     select: publicUserSelect,
@@ -158,20 +151,16 @@ export const logoutUser = asyncHandler(async (req: Request, res: Response) => {
     .json(
       new ApiResponse(
         200,
-        { success: true }, "User logged out"        
+        null,
+        "User logged out"
       )
     );
 });
 
 export const getCurrectUser = asyncHandler(async (req: Request, res: Response) => {
-  const user = req.user;
-
-  res.status(200).json(
-     new ApiResponse(
-      200,
-      {success:true, data:user}, "User fetched successfully"
-     )    
-  )
+  return res.status(200).json(
+    new ApiResponse(200, { user: req.user }, "User fetched successfully")
+  );
 });
 
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response) => {
@@ -186,7 +175,6 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
   try {
     payload = verifyRefreshToken(incomingRefreshToken);
   } catch {
-    // и просроченный, и битый токен → 401
     throw new ApiError(401, "Unauthorized: invalid or expired token");
   }
   
@@ -210,7 +198,6 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
   await prisma.user.update({
     where: { id: userId },
     data: { refreshToken: newRefreshToken },
-    
   });
 
   return res
@@ -220,7 +207,7 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
     .json(
       new ApiResponse(
         200,
-        { success: true, accessToken: newAccessToken, refreshToken: newRefreshToken },
+        { accessToken: newAccessToken, refreshToken: newRefreshToken },
         "Tokens refreshed successfully"
       )
     );
@@ -239,13 +226,10 @@ export const changeCurrectPassword = asyncHandler(async (req: Request, res: Resp
     throw new ApiError(400, "new password and confirm password do not match")
   }
 
-
   const existingUser = await prisma.user.findFirst({
     where: {id: userId },
   });
 
-  // Одинаковый ответ на "нет пользователя" и "неверный пароль",
-  // чтобы не подсказывать атакующему, какие аккаунты существуют.
   if (!existingUser || !(await existingUser.isPasswordCorrect(oldPassword))) {
     throw new ApiError(401, "Invalid credentials");
   }
@@ -265,7 +249,7 @@ export const changeCurrectPassword = asyncHandler(async (req: Request, res: Resp
     .json(
       new ApiResponse(
         200,
-        { success: true, accessToken: newAccessToken, refreshToken: newRefreshToken },
+        { accessToken: newAccessToken, refreshToken: newRefreshToken },
         "Password has been changed successfully"
       )
     );
@@ -283,7 +267,7 @@ export const updateBio = asyncHandler(async (req: Request, res: Response) => {
     throw new ApiError(404, "User dosn't exists");
   }
    
-  const userInfo = await prisma.user.update({
+  const user = await prisma.user.update({
     where: { id: userId },
     data: { bio:bio.trim() },
     select: { ...publicUserSelect }
@@ -294,7 +278,7 @@ export const updateBio = asyncHandler(async (req: Request, res: Response) => {
     .json(
       new ApiResponse(
         201,
-        {data:userInfo},
+        { user },
         "Bio has been updated"
       )
     );
@@ -310,7 +294,6 @@ export const updateProfileImage = asyncHandler(async (req: Request, res: Respons
     throw new ApiError(400, "Profile image file is required");
   }
 
-  // Нужен старый URL, чтобы потом удалить файл
   const current = await prisma.user.findUnique({
     where: { id: userId },
     select: { profileImage: true },
@@ -321,20 +304,19 @@ export const updateProfileImage = asyncHandler(async (req: Request, res: Respons
     throw new ApiError(500, "Something went wrong with image upload");
   }
 
-  const userInfo = await prisma.user.update({
+  const user = await prisma.user.update({
     where: { id: userId },
     data: { profileImage: profileImageUrl },
     select: publicUserSelect,
   });
 
-  // Удаляем старую картинку только после успешного апдейта, ошибки не роняют ответ
   if (current?.profileImage && current.profileImage !== profileImageUrl) {
     await deleteImageFromStorage(current.profileImage);
   }
 
   return res
     .status(200)
-    .json(new ApiResponse(200, { data: userInfo }, "Profile image has been updated"));
+    .json(new ApiResponse(200, { user }, "Profile image has been updated"));
 });
 
 export const getUserProfileData = asyncHandler(async (req: Request, res: Response) => {
@@ -349,7 +331,7 @@ export const getUserProfileData = asyncHandler(async (req: Request, res: Respons
       id: true,
       name: true,
       bio: true,
-      profileImage: true,        // email / password / refreshToken НЕ тянем
+      profileImage: true,
       _count: {
         select: {
           posts: true,
@@ -364,7 +346,7 @@ export const getUserProfileData = asyncHandler(async (req: Request, res: Respons
   if (!user) throw new ApiError(404, "User not found");
 
   const { _count, ...profile } = user;
-  res.status(200).json( new ApiResponse(200, { ...profile, ..._count }, "User data fetched successfully"));
+  res.status(200).json( new ApiResponse(200, { user: { ...profile, ..._count } }, "User data fetched successfully"));
 });
 
 export const followUser = asyncHandler(async (req: Request, res: Response) => {
@@ -385,8 +367,6 @@ export const followUser = asyncHandler(async (req: Request, res: Response) => {
   if(userToFollow.id === loggedInUserId) {
     throw new ApiError(400, "You can not follow yourself")
   }
-
-  //Проверим, есть ли уже подписка
 
   const existingFollow = await prisma.follow.findUnique({
     where: {
@@ -415,7 +395,7 @@ if(existingFollow) throw new ApiError(409, "You are already following this user"
     }
   });
 
-  return res.status(201).json(new ApiResponse(201, {following: follow.following}, "you are now following this user"))
+  return res.status(201).json(new ApiResponse(201, { following: follow.following }, "you are now following this user"))
 
  })
 
@@ -437,7 +417,6 @@ if(existingFollow) throw new ApiError(409, "You are already following this user"
   if(userToUnfollow.id === loggedInUserId) {
     throw new ApiError(400, "You can not follow yourself")
   }
-  //Проверим, есть ли уже подписка
 
   const existingFollow = await prisma.follow.findUnique({
     where: {
@@ -449,8 +428,6 @@ if(existingFollow) throw new ApiError(409, "You are already following this user"
   });
 
   if(!existingFollow) throw new ApiError(409, "You are not following this user");
-   
-  //Удаляем
 
   await prisma.follow.delete({
     where: {

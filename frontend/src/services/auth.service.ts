@@ -28,6 +28,5 @@ export const loginUser = async (data: LoginUserFormData) => {
 
 export const getCurrentUser = async () => {
     const response = await api.get("/users/current-user");
-    // ApiResponse wraps as { data: { success, data: user } }
-    return response.data?.data?.data ?? response.data?.data ?? response.data?.user ?? null;
+    return response.data.data.user;
 };
