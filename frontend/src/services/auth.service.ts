@@ -12,7 +12,7 @@ export const registerUser = async (data: RegisterUserFormData) => {
     }
 
     const response = await api.post("/users/register", formData, {
-        headers: { "Content-Type": "multipart/form-data" }
+        headers: { "Content-Type": "multipart/form-data" },
     });
     return response.data;
 };
@@ -26,7 +26,8 @@ export const loginUser = async (data: LoginUserFormData) => {
     return response.data;
 };
 
-export const getCurrentUser = async() => {
+export const getCurrentUser = async () => {
     const response = await api.get("/users/current-user");
-    return response.data;
-}
+    // ApiResponse wraps as { data: { success, data: user } }
+    return response.data?.data?.data ?? response.data?.data ?? response.data?.user ?? null;
+};

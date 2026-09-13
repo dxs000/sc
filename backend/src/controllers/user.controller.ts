@@ -7,10 +7,12 @@ import { asyncHandler } from "../middleware/errorHandler";
 import prisma from "../prisma";
 
 
+const isProd = process.env.NODE_ENV === "production";
+
 const cookieOptions = {
   httpOnly: true,
-  secure: true,
-  sameSite: "strict" as const,
+  secure: isProd,
+  sameSite: (isProd ? "strict" : "lax") as "strict" | "lax",
 };
 
 const publicUserSelect = {
@@ -461,4 +463,3 @@ if(existingFollow) throw new ApiError(409, "You are already following this user"
 
   return res.status(201).json(new ApiResponse(200, null, "you have unfollowed this user"))
 });
-
