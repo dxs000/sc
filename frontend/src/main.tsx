@@ -12,7 +12,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <div className="h-screen bg-black">
+          <App />
+        </div>
         <ToastContainer
           position="top-right"
           autoClose={3500}

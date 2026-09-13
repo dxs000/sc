@@ -6,6 +6,8 @@ import { useEffect } from 'react'
 import HomePage from './pages/HomePage'
 import { getCurrentUser } from './services/auth.service'
 import { setUser, setAuthLoad } from './store/slices/authSlice'
+import ProtectedRoute from './routes/ProtectedRoute'
+import PublicRoute from './routes/PublicRoute'
 
 const App = () => {
   const dispatch = useDispatch();
@@ -28,9 +30,32 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path='/' element={<HomePage />} />
-      <Route path='/register' element={<RegisterPage />} />
-      <Route path='/login' element={<LoginPage />} />
+      <Route 
+        path='/' 
+        element={
+        <ProtectedRoute>
+          <HomePage />
+        </ProtectedRoute>  
+        } 
+      />
+        
+      <Route 
+        path='/register' 
+        element={
+        <PublicRoute>
+          <RegisterPage />
+        </PublicRoute>  
+        } 
+      />
+      
+      <Route 
+        path='/login' 
+        element={
+        <PublicRoute>
+          <LoginPage />
+        </PublicRoute>    
+        } 
+      />
     </Routes>
   );
 };

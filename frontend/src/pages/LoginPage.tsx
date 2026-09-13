@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 
 const LoginPage = () => {
   return (
-    <div className="flex flex-col items-center md:gap-10 bg-[#000000] h-screen">
+    <div className="flex flex-col items-center md:gap-10 h-screen">
       <div className="flex flex-col items-center gap-5 md: pt-15">
         <h1 className="md: text-5xl font-bold text-[#9929EA]">Welcome To ConnectHub</h1>
         <p className="text-white md:text-2xl"> A Place To Flex Your Creation</p>
