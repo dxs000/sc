@@ -18,18 +18,10 @@ export const registerUser = async (data: RegisterUserFormData) => {
 };
 
 export const loginUser = async (data: LoginUserFormData) => {
-    const formData = new FormData();
-    if(data.identifier.includes("@")) {
-        formData.append("username", " ");
-        formData.append("email", data.identifier);
-    } else {
-        formData.append("username", data.identifier);
-        formData.append("email"," ")
-    }
-    formData.append("password", data.password);
-    
-    const response = await api.post("/users/login", formData,{
-         headers: { "Content-Type": "multipart/form-data" }
-    });
+    const payload = data.identifier.includes("@")
+        ? { email: data.identifier, password: data.password }
+        : { username: data.identifier, password: data.password };
+
+    const response = await api.post("/users/login", payload);
     return response.data;
 };
