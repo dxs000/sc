@@ -11,7 +11,7 @@ const LoginUserForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const {register, handleSubmit, formState: { errors }} = useForm<LoginUserFormData>({
+  const {register, handleSubmit, reset, formState: { errors }} = useForm<LoginUserFormData>({
     resolver: zodResolver(loginUserSchema)
   });
 
@@ -21,6 +21,7 @@ const LoginUserForm = () => {
       setServerError(null);
       await loginUser(data);
       toast.success("Logged in successfully");
+      reset();
     } catch (error: any) {
       const message = error?.message || "Login failed";
       setServerError(message);
