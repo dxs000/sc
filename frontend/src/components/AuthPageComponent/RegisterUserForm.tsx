@@ -4,7 +4,7 @@ import { registerUserSchema } from "../../schemas/auth.schema"
 import type { RegisterUserFormData } from "../../schemas/auth.schema"
 import { useForm } from "react-hook-form";
 import { registerUser } from "../../services/auth.service";
-import { toast } from "../ui/Toast";
+import { toast } from "react-toastify";
 import Spinner from "../ui/Spinner";
 import { useNavigate } from "react-router-dom"
 import { useDispatch} from "react-redux";

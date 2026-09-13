@@ -4,7 +4,7 @@ import { loginUserSchema } from "../../schemas/auth.schema"
 import { useState } from "react"
 import type { LoginUserFormData } from "../../schemas/auth.schema"
 import { loginUser } from "../../services/auth.service"
-import { toast } from "../ui/Toast"
+import { toast } from "react-toastify"
 import Spinner from "../ui/Spinner"
 import { useDispatch} from "react-redux";
 import { setUser } from "../../store/slices/authSlice";

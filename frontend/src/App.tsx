@@ -1,7 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
 import RegisterPage from './pages/RegisterPage'
 import LoginPage from './pages/LoginPage'
-import { Toaster } from './components/ui/Toast'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import HomePage from './pages/HomePage'
@@ -28,14 +27,11 @@ const App = () => {
   }, [dispatch]);
 
   return (
-    <>
-      <Toaster />
-      <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/register' element={<RegisterPage />} />
-        <Route path='/login' element={<LoginPage />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path='/' element={<HomePage />} />
+      <Route path='/register' element={<RegisterPage />} />
+      <Route path='/login' element={<LoginPage />} />
+    </Routes>
   );
 };
 
