@@ -1,15 +1,27 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginUserSchema } from "../../schemas/auth.schema"
+import { useState } from "react"
 import type { LoginUserFormData } from "../../schemas/auth.schema"
 
+
 const LoginUserForm = () => {
+
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);  
+  
   const {register, handleSubmit, formState: { errors }} = useForm<LoginUserFormData>({
     resolver: zodResolver(loginUserSchema)
   });
    
   const onSubmit = (data: LoginUserFormData) => {
-    console.log(data);
+    try{
+      setLoading(true);
+      setServerError(null);
+      console.log(data);
+    } catch(error){
+      console.log(error)
+    }
   }
 
   return (

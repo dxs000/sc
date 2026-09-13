@@ -14,6 +14,13 @@ app.use(express.urlencoded({ extended:true }))
 app.use(cors());
 app.use(cookieParser());
 
+app.use(cors({
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+    credentials: true,       // нужно для передачи cookies (accessToken, refreshToken)
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use('/api/v1/likes', likeRoute)
 app.use('/api/v1/users', userRouter)
 app.use('/api/v1/posts', postRouter)
