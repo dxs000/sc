@@ -26,9 +26,8 @@ const LoginUserForm = () => {
     try {
       setLoading(true);
       setServerError(null);
-      const response = await loginUser(data);
-      console.log(response.data);
-      dispatch(setUser(response.data.user));
+      const user = await loginUser(data);
+      dispatch(setUser(user));
       toast.success("Logged in successfully");
       reset();
       navigate("/");

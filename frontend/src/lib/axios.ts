@@ -14,6 +14,15 @@ const api = axios.create({
 
 let refreshPromise: Promise<unknown> | null = null;
 
+const isApiResponse = (value: unknown): value is { data: unknown; success: boolean; message: string } => {
+    return Boolean(
+        value &&
+        typeof value === "object" &&
+        "success" in value &&
+        "data" in value
+    );
+};
+
 const normalizeError = (error: any) => ({
     status: error?.response?.status,
     message:
@@ -24,7 +33,12 @@ const normalizeError = (error: any) => ({
 });
 
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        if (isApiResponse(response.data)) {
+            response.data = response.data.data;
+        }
+        return response;
+    },
     async (error) => {
         const original = error.config as RetryConfig | undefined;
         const status = error?.response?.status;

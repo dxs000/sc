@@ -14,7 +14,7 @@ export const registerUser = async (data: RegisterUserFormData) => {
     const response = await api.post("/users/register", formData, {
         headers: { "Content-Type": "multipart/form-data" },
     });
-    return response.data;
+    return response.data.user;
 };
 
 export const loginUser = async (data: LoginUserFormData) => {
@@ -23,10 +23,10 @@ export const loginUser = async (data: LoginUserFormData) => {
         : { username: data.identifier, password: data.password };
 
     const response = await api.post("/users/login", payload);
-    return response.data;
+    return response.data.user;
 };
 
 export const getCurrentUser = async () => {
     const response = await api.get("/users/current-user");
-    return response.data.data.user;
+    return response.data.user;
 };

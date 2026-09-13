@@ -26,9 +26,8 @@ const RegisterUserForm = () => {
     try {
       setLoading(true);
       setServerError(null);
-      const response = await registerUser(data);
-      dispatch(setUser(response.data.user));
-      console.log("Regsitered", response);
+      const user = await registerUser(data);
+      dispatch(setUser(user));
       toast.success("Account Created Successfully");
       reset();
       navigate("/");
@@ -66,8 +65,8 @@ const RegisterUserForm = () => {
       <div className="flex flex-col gap-1 md:gap-2 mx-6 mb-4">
         <label className="text-[#9929EA]">Confirm Password</label>
         <input  {...register("confirmPassword")}  className="text-white border border-white md:p-2 rounded-xl" type="password" placeholder="Enter your password" />
-        {errors.password && (
-            <p className="text-red-400">{errors.password.message}</p>
+        {errors.confirmPassword && (
+            <p className="text-red-400">{errors.confirmPassword.message}</p>
         )}
       </div>
       <div className="flex flex-col gap-1 md:gap-2 mx-6 mb-4">
