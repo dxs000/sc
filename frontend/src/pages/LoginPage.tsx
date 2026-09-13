@@ -1,4 +1,5 @@
 import LoginUserForm from "../components/AuthPageComponent/LoginUserForm"
+import { Link } from "react-router-dom"
 
 const LoginPage = () => {
   return (
@@ -10,6 +11,9 @@ const LoginPage = () => {
       <div className="flex flex-col border border-white md:w-1/2 mt-10 pt-5 rounded-xl shadow-2xl shadow-[#230737]">
         <h1 className="text-white text-xl mx-auto">Login to your account</h1>
         <LoginUserForm />
+        <div className="text-white mx-auto mb-8">
+          <Link to="/register">Do not have an account?</Link>
+        </div>
       </div>      
     </div>    
   )
