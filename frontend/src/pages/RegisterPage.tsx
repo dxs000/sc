@@ -6,7 +6,7 @@ const RegisterPage = () => {
   return (
     <div className="flex flex-col items-center md:gap-10 min-h-screen pb-10">
       <div className="flex flex-col items-center gap-5 md: pt-15">
-        <h1 className="md: text-5xl font-bold text-[#9929EA]">Welcome To ConnectHub</h1>
+        <h1 className=" text-2xl md:text-5xl font-bold text-[#9929EA]">Welcome To ConnectHub</h1>
         <p className="text-white md:text-2xl"> A Place To Flex Your Creation</p>
       </div>
       <div className="flex flex-col border border-white md:w-1/2 mt-10 pt-5 rounded-xl shadow-2xl shadow-[#230737]">
