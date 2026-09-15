@@ -6,7 +6,7 @@ import Spinner from "../components/ui/Spinner";
 import { logoutUser } from "../services/auth.service";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { Navigate } from "react-router-dom";
+
 
 const HomePage = () => {
   const dispatch = useDispatch();
@@ -16,14 +16,14 @@ const HomePage = () => {
 
   const handleLogout = async () => {
     try{
-      const response = await logoutUser();
-       toast.success(response.message);
-       dispatch(logout());
-       <Navigate to = "/login" />
-
+       await logoutUser();
+       toast.success("Вы вышли из аккаунта")
+       
     } catch(error:any) {
       setServerError(error.message);
       toast.error(error.message)
+    } finally {
+      dispatch(logout());
     }
   }
 
