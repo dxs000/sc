@@ -9,10 +9,10 @@ const Button = ({ loading, children, className = "", disabled, ...props }: Butto
   return (
     <button
       disabled={disabled || loading}
-      className={`flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-brand text-base font-bold text-white transition active:scale-[0.98] hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70 ${className}`}
+      className={`flex h-12 w-full items-center justify-center gap-2 rounded-lg bg-brand text-base font-semibold text-white transition active:scale-[0.98] hover:bg-brand-hover disabled:cursor-not-allowed disabled:opacity-70 ${className}`}
       {...props}
     >
-      {loading && <Spinner size="sm" />}
+      {loading && <Spinner size="sm" tone="onBrand" />}
       {children}
     </button>
   );

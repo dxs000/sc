@@ -81,17 +81,17 @@ const RegisterUserForm = () => {
         {...register("confirmPassword")}
       />
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium text-brand">Profile image</span>
-        <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-white/20 bg-white/5 p-3 active:scale-[0.99]">
-          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm text-neutral-300">
+        <span className="text-sm font-medium text-ink">Profile image</span>
+        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-border bg-canvas p-3 active:scale-[0.99]">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-border text-sm text-muted">
             {preview ? (
               <img src={preview} alt="Preview" className="h-full w-full object-cover" />
             ) : (
               "Photo"
             )}
           </div>
-          <div className="text-sm text-neutral-300">
-            <p className="font-medium text-white">Choose photo</p>
+          <div className="text-sm text-muted">
+            <p className="font-medium text-ink">Choose photo</p>
             <p>JPG, PNG or WebP</p>
           </div>
           <input
@@ -108,11 +108,11 @@ const RegisterUserForm = () => {
           />
         </label>
         {errors.profileImage && (
-          <p className="text-sm text-red-400">{String(errors.profileImage.message)}</p>
+          <p className="text-sm text-danger">{String(errors.profileImage.message)}</p>
         )}
       </div>
       {serverError && (
-        <p className="text-sm text-red-400">{serverError}</p>
+        <p className="text-sm text-danger">{serverError}</p>
       )}
       <Button type="submit" loading={loading}>
         {loading ? "Registering..." : "Register"}

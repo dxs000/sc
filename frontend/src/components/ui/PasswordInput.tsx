@@ -13,7 +13,7 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
     return (
       <div className="flex flex-col gap-1.5">
         {label && (
-          <label htmlFor={inputId} className="text-sm font-medium text-brand">
+          <label htmlFor={inputId} className="text-sm font-medium text-ink">
             {label}
           </label>
         )}
@@ -22,19 +22,19 @@ const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             id={inputId}
             ref={ref}
             type={visible ? "text" : "password"}
-            className={`h-12 w-full rounded-xl border border-white/20 bg-white/5 px-4 pr-16 text-base text-white placeholder:text-neutral-400 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/50 disabled:opacity-60 ${className}`}
+            className={`h-12 w-full rounded-lg border border-border bg-surface px-4 pr-16 text-base text-ink placeholder:text-muted outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 disabled:opacity-60 ${className}`}
             {...props}
           />
           <button
             type="button"
             onClick={() => setVisible((v) => !v)}
-            className="absolute inset-y-0 right-3 text-sm text-neutral-300 active:scale-95"
+            className="absolute inset-y-0 right-3 text-sm text-muted active:scale-95"
             tabIndex={-1}
           >
             {visible ? "Hide" : "Show"}
           </button>
         </div>
-        {error && <p className="text-sm text-red-400">{error}</p>}
+        {error && <p className="text-sm text-danger">{error}</p>}
       </div>
     );
   }

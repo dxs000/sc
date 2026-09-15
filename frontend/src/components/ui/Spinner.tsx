@@ -1,6 +1,7 @@
 type SpinnerProps = {
   size?: "sm" | "md" | "lg";
   className?: string;
+  tone?: "default" | "onBrand";
 };
 
 const sizeMap = {
@@ -9,10 +10,15 @@ const sizeMap = {
   lg: "h-10 w-10 border-4",
 };
 
-const Spinner = ({ size = "md", className = "" }: SpinnerProps) => {
+const toneMap = {
+  default: "border-border border-t-brand",
+  onBrand: "border-white/30 border-t-white",
+};
+
+const Spinner = ({ size = "md", className = "", tone = "default" }: SpinnerProps) => {
   return (
     <span
-      className={`inline-block animate-spin rounded-full border-white/30 border-t-white ${sizeMap[size]} ${className}`}
+      className={`inline-block animate-spin rounded-full ${toneMap[tone]} ${sizeMap[size]} ${className}`}
       aria-hidden="true"
     />
   );

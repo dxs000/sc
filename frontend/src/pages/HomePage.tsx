@@ -9,7 +9,7 @@ const HomePage = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-dvh items-center justify-center">
+      <div className="flex min-h-dvh items-center justify-center bg-canvas">
         <Spinner size="lg" />
       </div>
     );
@@ -18,10 +18,10 @@ const HomePage = () => {
   return (
     <AppShell>
       <section className="mx-auto max-w-lg">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-          <h1 className="text-xl font-semibold">Welcome, {user?.name}</h1>
-          <p className="mt-2 text-sm text-neutral-400">
-            Your feed will appear here. Pull to refresh and new posts are coming next.
+        <div className="rounded-2xl border border-border bg-surface p-5 shadow-sm">
+          <h1 className="text-xl font-semibold text-ink">Welcome, {user?.name}</h1>
+          <p className="mt-2 text-sm text-muted">
+            Consultations from advisors and client discussions will appear in this feed.
           </p>
         </div>
       </section>

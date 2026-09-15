@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <div className="min-h-dvh bg-neutral-950 text-white">
+        <div className="min-h-dvh bg-canvas text-ink">
           <App />
         </div>
         <ToastContainer
@@ -22,7 +22,7 @@ createRoot(document.getElementById('root')!).render(
           newestOnTop
           closeOnClick
           pauseOnHover
-          theme="dark"
+          theme="light"
         />
       </BrowserRouter>
     </Provider>
