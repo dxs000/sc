@@ -25,7 +25,7 @@ router.post("/refresh-token", refreshAccessToken)
 
 //secured routes
 
-router.get("/logout", verifyJWT, logoutUser);
+router.post("/logout", verifyJWT, logoutUser);
 router.get("/current-user", verifyJWT, getCurrectUser);
 router.post("/change-password", verifyJWT, changeCurrectPassword);
 router.post("/add-bio", verifyJWT, updateBio);
