@@ -1,21 +1,24 @@
 import z from 'zod';
 
 export const registerUserSchema = z.object({
-    username: z.string().min(3, "Username must be at least 3 characters"),
-    email: z.email("Invalid e-mail address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+    username: z.string().min(3, "Имя пользователя должно содержать не менее 3 символов"),
+    email: z.email("Некорректный email"),
+    password: z.string().min(6, "Пароль должен содержать не менее 6 символов"),
+    confirmPassword: z.string().min(6, "Повторите пароль"),
     profileImage: z.instanceof(FileList)
     .optional()
-    .refine((files) => !files ||  files.length <= 1, "Only one profile picture is allowed")
+    .refine((files) => !files ||  files.length <= 1, "Можно загрузить только одно фото")
     .refine((files) => !files ||  files.length === 0 || 
             ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(files[0].type),
-            "Only image files are allowed (jpg, png, webp)")
+            "Допустимы только изображения (jpg, png, webp)")
+}).refine((data) => data.password === data.confirmPassword, {
+    path: ["confirmPassword"],
+    message: "Пароли не совпадают",
 });
 
 export const loginUserSchema = z.object({
-    identifier: z.string().min(1, "Username or e-mail is required"),
-    password: z.string().min(6, "Password must be at least 6 characters")
+    identifier: z.string().min(1, "Укажите имя пользователя или email"),
+    password: z.string().min(6, "Пароль должен содержать не менее 6 символов")
 })
 
 export type RegisterUserFormData = z.infer<typeof registerUserSchema>;

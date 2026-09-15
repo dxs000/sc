@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod"
 import { registerUserSchema } from "../../schemas/auth.schema"
 import type { RegisterUserFormData } from "../../schemas/auth.schema"
@@ -20,11 +20,17 @@ const RegisterUserForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {register, handleSubmit, reset, formState: { errors }} = useForm<RegisterUserFormData>({
+  const {register, handleSubmit, reset, setValue, formState: { errors }} = useForm<RegisterUserFormData>({
       resolver: zodResolver(registerUserSchema)
     });
 
   const { onChange: onImageChange, ...imageRegister } = register("profileImage");
+
+  useEffect(() => {
+    return () => {
+      if (preview) URL.revokeObjectURL(preview);
+    };
+  }, [preview]);
      
     const onSubmit = async (data: RegisterUserFormData) => {
     try {
@@ -32,23 +38,33 @@ const RegisterUserForm = () => {
       setServerError(null);
       const user = await registerUser(data);
       dispatch(setUser(user));
-      toast.success("Account Created Successfully");
+      toast.success("Аккаунт создан");
       reset();
-      setPreview(null);
+      setPreview((current) => {
+        if (current) URL.revokeObjectURL(current);
+        return null;
+      });
       navigate("/");
       } catch (err:any) {
         setServerError(err.message);
-        toast.error(err.message);
       } finally {
         setLoading(false);
       }
     }
+
+  const clearPhoto = () => {
+    setPreview((current) => {
+      if (current) URL.revokeObjectURL(current);
+      return null;
+    });
+    setValue("profileImage", undefined);
+  };
     
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <Input
-        label="Username"
-        placeholder="Enter your username"
+        label="Имя пользователя"
+        placeholder="Введите имя пользователя"
         autoComplete="username"
         disabled={loading}
         error={errors.username?.message}
@@ -57,7 +73,7 @@ const RegisterUserForm = () => {
       <Input
         label="Email"
         type="email"
-        placeholder="Enter your email"
+        placeholder="Введите email"
         autoComplete="email"
         inputMode="email"
         disabled={loading}
@@ -65,34 +81,34 @@ const RegisterUserForm = () => {
         {...register("email")}
       />
       <PasswordInput
-        label="Password"
-        placeholder="Enter your password"
+        label="Пароль"
+        placeholder="Введите пароль"
         autoComplete="new-password"
         disabled={loading}
         error={errors.password?.message}
         {...register("password")}
       />
       <PasswordInput
-        label="Confirm password"
-        placeholder="Confirm your password"
+        label="Повтор пароля"
+        placeholder="Повторите пароль"
         autoComplete="new-password"
         disabled={loading}
         error={errors.confirmPassword?.message}
         {...register("confirmPassword")}
       />
       <div className="flex flex-col gap-2">
-        <span className="text-sm font-medium text-ink">Profile image</span>
-        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-border bg-canvas p-3 active:scale-[0.99]">
+        <span className="text-sm font-medium text-ink">Фото профиля</span>
+        <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-dashed border-border bg-canvas p-3 transition focus-within:ring-2 focus-within:ring-brand/30 active:scale-[0.99]">
           <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-border text-sm text-muted">
             {preview ? (
-              <img src={preview} alt="Preview" className="h-full w-full object-cover" />
+              <img src={preview} alt="Превью фото" className="h-full w-full object-cover" />
             ) : (
-              "Photo"
+              "Фото"
             )}
           </div>
           <div className="text-sm text-muted">
-            <p className="font-medium text-ink">Choose photo</p>
-            <p>JPG, PNG or WebP</p>
+            <p className="font-medium text-ink">Выбрать фото</p>
+            <p>JPG, PNG или WebP</p>
           </div>
           <input
             type="file"
@@ -102,11 +118,24 @@ const RegisterUserForm = () => {
             {...imageRegister}
             onChange={(e) => {
               const file = e.target.files?.[0];
-              setPreview(file ? URL.createObjectURL(file) : null);
+              setPreview((current) => {
+                if (current) URL.revokeObjectURL(current);
+                return file ? URL.createObjectURL(file) : null;
+              });
               void onImageChange(e);
             }}
           />
         </label>
+        {preview && (
+          <button
+            type="button"
+            onClick={clearPhoto}
+            disabled={loading}
+            className="self-start text-sm text-muted underline underline-offset-2"
+          >
+            Удалить фото
+          </button>
+        )}
         {errors.profileImage && (
           <p className="text-sm text-danger">{String(errors.profileImage.message)}</p>
         )}
@@ -115,7 +144,7 @@ const RegisterUserForm = () => {
         <p className="text-sm text-danger">{serverError}</p>
       )}
       <Button type="submit" loading={loading}>
-        {loading ? "Registering..." : "Register"}
+        {loading ? "Регистрация..." : "Зарегистрироваться"}
       </Button>
     </form>
   )

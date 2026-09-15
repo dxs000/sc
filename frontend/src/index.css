@@ -19,16 +19,20 @@ body,
 }
 
 body {
-  background: #f4f6f8;
-  color: #1b2430;
+  background: var(--color-canvas);
+  color: var(--color-ink);
 }
 
-@media (max-width: 768px) {
+:root {
+  --toastify-toast-width: min(24rem, calc(100vw - 1.5rem));
+}
+
+.Toastify__toast-container {
+  bottom: calc(4.5rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 768px) {
   .Toastify__toast-container {
-    width: auto !important;
-    left: 0.75rem !important;
-    right: 0.75rem !important;
-    bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important;
-    top: auto !important;
+    bottom: 1.5rem;
   }
 }

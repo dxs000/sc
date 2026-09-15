@@ -1,6 +1,6 @@
 import { Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Spinner from "../components/ui/Spinner";
+import RouteFallback from "../components/ui/RouteFallback";
 import type { RootState } from "../store/store";
 import type { JSX } from "react";
 
@@ -14,7 +14,7 @@ const PublicRoute = ({children}:Props) => {
     );
 
     if(loading) {
-        return <Spinner />
+        return <RouteFallback />
     }
 
     if(isAuthenticated) {

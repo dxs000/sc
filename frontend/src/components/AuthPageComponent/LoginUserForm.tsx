@@ -29,13 +29,11 @@ const LoginUserForm = () => {
       setServerError(null);
       const user = await loginUser(data);
       dispatch(setUser(user));
-      toast.success("Logged in successfully");
+      toast.success("Вы вошли в аккаунт");
       reset();
       navigate("/");
     } catch (error: any) {
-      const message = error?.message || "Login failed";
-      setServerError(message);
-      toast.error(message);
+      setServerError(error?.message || "Не удалось войти");
     } finally {
       setLoading(false);
     }
@@ -44,26 +42,26 @@ const LoginUserForm = () => {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
       <Input
-        label="Username or email"
-        placeholder="Enter your username"
+        label="Имя пользователя или email"
+        placeholder="Введите имя пользователя или email"
         autoComplete="username"
         disabled={loading}
         error={errors.identifier?.message}
         {...register("identifier")}
       />
       <PasswordInput
-        label="Password"
-        placeholder="Enter your password"
+        label="Пароль"
+        placeholder="Введите пароль"
         autoComplete="current-password"
         disabled={loading}
         error={errors.password?.message}
         {...register("password")}
       />
       {serverError && (
-        <p className="text-sm text-red-400">{serverError}</p>
+        <p className="text-sm text-danger">{serverError}</p>
       )}
       <Button type="submit" loading={loading}>
-        {loading ? "Logging in..." : "Login"}
+        {loading ? "Вход..." : "Войти"}
       </Button>
     </form>
   )
