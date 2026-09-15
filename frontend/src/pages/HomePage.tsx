@@ -1,50 +1,32 @@
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import type { RootState } from "../store/store";
-import { logout } from "../store/slices/authSlice";
 import Spinner from "../components/ui/Spinner";
-import { logoutUser } from "../services/auth.service";
-import { toast } from "react-toastify";
-import { useState } from "react";
-
+import AppShell from "../components/layout/AppShell";
 
 const HomePage = () => {
-  const dispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.auth.user)  
-  const  { loading } = useSelector((state: RootState) => state.auth)
-  const [serverError, setServerError] = useState<string | null>(null);
+  const user = useSelector((state: RootState) => state.auth.user);
+  const { loading } = useSelector((state: RootState) => state.auth);
 
-  const handleLogout = async () => {
-    try{
-       await logoutUser();
-       toast.success("Вы вышли из аккаунта")
-       
-    } catch(error:any) {
-      setServerError(error.message);
-      toast.error(error.message)
-    } finally {
-      dispatch(logout());
-    }
+  if (loading) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center">
+        <Spinner size="lg" />
+      </div>
+    );
   }
 
   return (
-    <div>
-      {loading? (
-      <Spinner />
-        ):( 
-        user? (
-          <div>
-            <h1 className="text-blue-500">Welcome, {user.name}</h1>
-            <button onClick={handleLogout} className="text-red-700">Logout</button>
-          </div>
-          ):
-          (
-          <h1 className="text-red-500">You are not logged in</h1>
-        ))
-      }
-      
-    </div>
-  )
-} 
+    <AppShell>
+      <section className="mx-auto max-w-lg">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+          <h1 className="text-xl font-semibold">Welcome, {user?.name}</h1>
+          <p className="mt-2 text-sm text-neutral-400">
+            Your feed will appear here. Pull to refresh and new posts are coming next.
+          </p>
+        </div>
+      </section>
+    </AppShell>
+  );
+};
 
-export default HomePage
+export default HomePage;

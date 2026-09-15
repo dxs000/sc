@@ -1,21 +1,24 @@
-import LoginUserForm from "../components/AuthPageComponent/LoginUserForm"
 import { Link } from "react-router-dom"
+import LoginUserForm from "../components/AuthPageComponent/LoginUserForm"
+import AuthCard from "../components/ui/AuthCard"
 
 const LoginPage = () => {
   return (
-    <div className="flex flex-col items-center gap-6 md:gap-10 h-screen">
-      <div className="flex flex-col items-center gap-2 md:gap-5 pt-10">
-        <h1 className="text-2xl md:text-5xl font-bold text-[#9929EA]">Welcome To ConnectHub</h1>
-        <p className="text-white text-xl md:text-2xl"> A Place To Flex Your Creation</p>
+    <div className="flex min-h-dvh flex-col items-center px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-[calc(2.5rem+env(safe-area-inset-top))]">
+      <div className="mb-8 flex flex-col items-center gap-2 text-center">
+        <h1 className="text-3xl font-bold text-brand md:text-5xl">ConnectHub</h1>
+        <p className="text-sm text-neutral-300 md:text-lg">A place to flex your creation</p>
       </div>
-      <div className="flex flex-col border border-white md:w-1/2 mt-10 pt-5 rounded-xl shadow-2xl shadow-[#230737]">
-        <h1 className="text-white text-xl mx-auto">Login to your account</h1>
+      <AuthCard title="Login to your account">
         <LoginUserForm />
-        <div className="text-white mx-auto mb-8">
-          <Link to="/register">Do not have an account?</Link>
-        </div>
-      </div>      
-    </div>    
+        <p className="mt-2 text-center text-sm text-neutral-300">
+          Do not have an account?{" "}
+          <Link to="/register" className="font-semibold text-brand underline underline-offset-2">
+            Sign up
+          </Link>
+        </p>
+      </AuthCard>
+    </div>
   )
 }
 

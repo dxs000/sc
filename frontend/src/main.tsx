@@ -12,11 +12,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <div className="h-screen bg-black">
+        <div className="min-h-dvh bg-neutral-950 text-white">
           <App />
         </div>
         <ToastContainer
-          position="top-right"
+          position="bottom-center"
           autoClose={3500}
           hideProgressBar={false}
           newestOnTop

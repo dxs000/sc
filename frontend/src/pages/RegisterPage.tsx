@@ -1,22 +1,24 @@
 import { Link } from "react-router-dom"
 import RegisterUserForm from "../components/AuthPageComponent/RegisterUserForm"
-
+import AuthCard from "../components/ui/AuthCard"
 
 const RegisterPage = () => {
   return (
-    <div className="flex flex-col items-center md:gap-10 min-h-screen pb-10">
-      <div className="flex flex-col items-center gap-5 md: pt-15">
-        <h1 className=" text-2xl md:text-5xl font-bold text-[#9929EA]">Welcome To ConnectHub</h1>
-        <p className="text-white md:text-2xl"> A Place To Flex Your Creation</p>
+    <div className="flex min-h-dvh flex-col items-center px-4 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-[calc(2.5rem+env(safe-area-inset-top))]">
+      <div className="mb-8 flex flex-col items-center gap-2 text-center">
+        <h1 className="text-3xl font-bold text-brand md:text-5xl">ConnectHub</h1>
+        <p className="text-sm text-neutral-300 md:text-lg">A place to flex your creation</p>
       </div>
-      <div className="flex flex-col border border-white md:w-1/2 mt-10 pt-5 rounded-xl shadow-2xl shadow-[#230737]">
-        <h1 className="text-white text-xl mx-auto">Create your account</h1>
+      <AuthCard title="Create your account">
         <RegisterUserForm />
-        <div className="text-white mx-auto mb-8">
-          <Link to="/login">Already have an account?</Link>
-        </div>
-      </div>      
-    </div>    
+        <p className="mt-2 text-center text-sm text-neutral-300">
+          Already have an account?{" "}
+          <Link to="/login" className="font-semibold text-brand underline underline-offset-2">
+            Log in
+          </Link>
+        </p>
+      </AuthCard>
+    </div>
   )
 }
 

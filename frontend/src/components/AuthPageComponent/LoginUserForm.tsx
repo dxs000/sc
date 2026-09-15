@@ -5,11 +5,12 @@ import { useState } from "react"
 import type { LoginUserFormData } from "../../schemas/auth.schema"
 import { loginUser } from "../../services/auth.service"
 import { toast } from "react-toastify"
-import Spinner from "../ui/Spinner"
 import { useDispatch} from "react-redux";
 import { setUser } from "../../store/slices/authSlice";
 import { useNavigate } from "react-router-dom"
-
+import Input from "../ui/Input"
+import PasswordInput from "../ui/PasswordInput"
+import Button from "../ui/Button"
 
 const LoginUserForm = () => {
   const [serverError, setServerError] = useState<string | null>(null);
@@ -41,34 +42,29 @@ const LoginUserForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="border my-10">
-      <div className="flex flex-col md:gap-2 mx-6 mb-4">
-        <label className="text-[#9929EA]">Username</label>
-        <input type="text" {...register("identifier")} className="text-white border border-white md:p-2 rounded-xl" placeholder="Enter your username" disabled={loading} />
-        {errors.identifier && (
-            <p className="text-red-400">{errors.identifier.message}</p>
-        )}
-      </div>
-      <div className="flex flex-col md:gap-2 mx-6 mb-4">
-        <label className="text-[#9929EA]">Password</label>
-        <input type="password" {...register("password")} className="text-white border border-white md:p-2 rounded-xl" placeholder="Enter your password" disabled={loading} />
-         {errors.password && (
-            <p className="text-red-400">{errors.password.message}</p>
-        )}
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <Input
+        label="Username or email"
+        placeholder="Enter your username"
+        autoComplete="username"
+        disabled={loading}
+        error={errors.identifier?.message}
+        {...register("identifier")}
+      />
+      <PasswordInput
+        label="Password"
+        placeholder="Enter your password"
+        autoComplete="current-password"
+        disabled={loading}
+        error={errors.password?.message}
+        {...register("password")}
+      />
       {serverError && (
-        <p className="text-red-400 text-sm mx-6 mb-2">{serverError}</p>
+        <p className="text-sm text-red-400">{serverError}</p>
       )}
-      <div className="flex flex-col md:gap-2 mx-6 mb-4">
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-[#9929EA] text-white font-bold md:py-2 rounded-xl hover:cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-        >
-          {loading && <Spinner size="sm" />}
-          {loading ? "Logging in..." : "Login"}
-        </button>
-      </div>
+      <Button type="submit" loading={loading}>
+        {loading ? "Logging in..." : "Login"}
+      </Button>
     </form>
   )
 }

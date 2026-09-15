@@ -5,24 +5,28 @@ import type { RegisterUserFormData } from "../../schemas/auth.schema"
 import { useForm } from "react-hook-form";
 import { registerUser } from "../../services/auth.service";
 import { toast } from "react-toastify";
-import Spinner from "../ui/Spinner";
 import { useNavigate } from "react-router-dom"
 import { useDispatch} from "react-redux";
 import { setUser } from "../../store/slices/authSlice";
+import Input from "../ui/Input"
+import PasswordInput from "../ui/PasswordInput"
+import Button from "../ui/Button"
 
 const RegisterUserForm = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {register, handleSubmit, reset, formState: { errors, isSubmitting }} = useForm<RegisterUserFormData>({
+  const {register, handleSubmit, reset, formState: { errors }} = useForm<RegisterUserFormData>({
       resolver: zodResolver(registerUserSchema)
     });
+
+  const { onChange: onImageChange, ...imageRegister } = register("profileImage");
      
     const onSubmit = async (data: RegisterUserFormData) => {
-      
     try {
       setLoading(true);
       setServerError(null);
@@ -30,6 +34,7 @@ const RegisterUserForm = () => {
       dispatch(setUser(user));
       toast.success("Account Created Successfully");
       reset();
+      setPreview(null);
       navigate("/");
       } catch (err:any) {
         setServerError(err.message);
@@ -40,52 +45,78 @@ const RegisterUserForm = () => {
     }
     
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="border my-5">
-      <div className="flex flex-col gap-1 md:gap-2 mx-6 mb-4">
-        <label className="text-[#9929EA]">Username</label>
-        <input  {...register("username")}  className="text-white border border-white md:p-2 rounded-xl" type="text" placeholder="Enter your username" />
-        {errors.username && (
-            <p className="text-red-400">{errors.username.message}</p>
-        )}
-      </div>
-      <div className="flex flex-col gap-1 md:gap-2 mx-6 mb-4">
-        <label className="text-[#9929EA]">Email</label>
-        <input  {...register("email")}  className="text-white border border-white md:p-2 rounded-xl" type="email" placeholder="Enter your email" />
-        {errors.email && (
-            <p className="text-red-400">{errors.email.message}</p>
-        )}
-      </div>
-      <div className="flex flex-col gap-1 md:gap-2 mx-6 mb-4">
-        <label className="text-[#9929EA]">Password</label>
-        <input  {...register("password")}  className="text-white border border-white md:p-2 rounded-xl" type="password" placeholder="Enter your password" />
-        {errors.password && (
-            <p className="text-red-400">{errors.password.message}</p>
-        )}
-      </div>
-      <div className="flex flex-col gap-1 md:gap-2 mx-6 mb-4">
-        <label className="text-[#9929EA]">Confirm Password</label>
-        <input  {...register("confirmPassword")}  className="text-white border border-white md:p-2 rounded-xl" type="password" placeholder="Enter your password" />
-        {errors.confirmPassword && (
-            <p className="text-red-400">{errors.confirmPassword.message}</p>
-        )}
-      </div>
-      <div className="flex flex-col gap-1 md:gap-2 mx-6 mb-4">
-        <label className="text-[#9929EA]">Profile image</label>
-        <input  {...register("profileImage")}  className="text-white border border-white md:p-2 hover:bg-[#131313] hover:cursor-pointer rounded-xl" type="file" />
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <Input
+        label="Username"
+        placeholder="Enter your username"
+        autoComplete="username"
+        disabled={loading}
+        error={errors.username?.message}
+        {...register("username")}
+      />
+      <Input
+        label="Email"
+        type="email"
+        placeholder="Enter your email"
+        autoComplete="email"
+        inputMode="email"
+        disabled={loading}
+        error={errors.email?.message}
+        {...register("email")}
+      />
+      <PasswordInput
+        label="Password"
+        placeholder="Enter your password"
+        autoComplete="new-password"
+        disabled={loading}
+        error={errors.password?.message}
+        {...register("password")}
+      />
+      <PasswordInput
+        label="Confirm password"
+        placeholder="Confirm your password"
+        autoComplete="new-password"
+        disabled={loading}
+        error={errors.confirmPassword?.message}
+        {...register("confirmPassword")}
+      />
+      <div className="flex flex-col gap-2">
+        <span className="text-sm font-medium text-brand">Profile image</span>
+        <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-white/20 bg-white/5 p-3 active:scale-[0.99]">
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white/10 text-sm text-neutral-300">
+            {preview ? (
+              <img src={preview} alt="Preview" className="h-full w-full object-cover" />
+            ) : (
+              "Photo"
+            )}
+          </div>
+          <div className="text-sm text-neutral-300">
+            <p className="font-medium text-white">Choose photo</p>
+            <p>JPG, PNG or WebP</p>
+          </div>
+          <input
+            type="file"
+            accept="image/jpeg,image/jpg,image/png,image/webp"
+            className="sr-only"
+            disabled={loading}
+            {...imageRegister}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              setPreview(file ? URL.createObjectURL(file) : null);
+              void onImageChange(e);
+            }}
+          />
+        </label>
         {errors.profileImage && (
-            <p className="text-red-400">{errors.profileImage.message}</p>
-        )}  
+          <p className="text-sm text-red-400">{String(errors.profileImage.message)}</p>
+        )}
       </div>
       {serverError && (
-        <p className="text-red-400 text-sm mx-6 mb-2">{serverError}</p>
+        <p className="text-sm text-red-400">{serverError}</p>
       )}
-      <div className="flex flex-col gap-1 md:gap-2 mx-6 mb-4">
-        <button type="submit" disabled={isSubmitting} 
-                className="bg-[#9929EA] text-white py-2 rounded-xl hover:cursor-pointer">
-          {loading && <Spinner size="sm" />}        
-          {isSubmitting ? "Registering..." : "Register"}           
-        </button>
-      </div>
+      <Button type="submit" loading={loading}>
+        {loading ? "Registering..." : "Register"}
+      </Button>
     </form>
   )
 }
