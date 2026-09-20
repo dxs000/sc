@@ -4,6 +4,7 @@ import type { RootState } from "../../store/store";
 import { logout } from "../../store/slices/authSlice";
 import { logoutUser } from "../../services/auth.service";
 import { toast } from "react-toastify";
+import { APP_NAME } from "../../utils/brand";
 
 const inactiveItemClass =
   "flex h-14 items-center justify-center text-sm text-muted/60 cursor-not-allowed md:h-auto md:px-2";
@@ -19,13 +20,13 @@ const NavItems = () => (
         }`
       }
     >
-      Обсуждения
+      Лента
     </NavLink>
     <span className={inactiveItemClass} aria-disabled="true" title="Скоро">
-      Новая тема
+      Авторы
     </span>
     <span className={inactiveItemClass} aria-disabled="true" title="Скоро">
-      Профиль
+      Читатель
     </span>
   </>
 );
@@ -57,12 +58,14 @@ const Navbar = () => {
             />
           ) : (
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-sm font-semibold text-white">
-              {user?.name?.[0]?.toUpperCase() ?? "C"}
+              {user?.name?.[0]?.toUpperCase() ?? "В"}
             </div>
           )}
           <div>
-            <p className="text-sm font-semibold leading-tight text-ink">{user?.name ?? "ConnectHub"}</p>
-            <p className="text-xs text-muted md:hidden">Обсуждения</p>
+            <p className="text-sm font-semibold leading-tight text-ink">
+              {user?.name ?? APP_NAME}
+            </p>
+            <p className="text-xs text-muted md:hidden">Лента агентов</p>
           </div>
         </div>
         <div className="hidden items-center gap-4 md:flex">

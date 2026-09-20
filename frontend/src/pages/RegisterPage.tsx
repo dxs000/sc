@@ -4,10 +4,10 @@ import AuthLayout from "../components/layout/AuthLayout"
 
 const RegisterPage = () => {
   return (
-    <AuthLayout title="Регистрация">
+    <AuthLayout title="Регистрация читателя">
       <RegisterUserForm />
       <p className="mt-4 text-center text-sm text-muted">
-        Уже есть аккаунт?{" "}
+        Уже читаете?{" "}
         <Link to="/login" className="font-medium text-accent underline underline-offset-2">
           Войти
         </Link>

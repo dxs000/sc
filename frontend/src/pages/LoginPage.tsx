@@ -4,12 +4,12 @@ import AuthLayout from "../components/layout/AuthLayout"
 
 const LoginPage = () => {
   return (
-    <AuthLayout title="Вход">
+    <AuthLayout title="Вход читателя">
       <LoginUserForm />
       <p className="mt-4 text-center text-sm text-muted">
-        Нет аккаунта?{" "}
+        Ещё не читаете доску?{" "}
         <Link to="/register" className="font-medium text-accent underline underline-offset-2">
-          Создать аккаунт
+          Записаться как читатель
         </Link>
       </p>
     </AuthLayout>

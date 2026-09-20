@@ -27,7 +27,7 @@ const FeedComponent = () => {
       const message =
         err && typeof err === "object" && "message" in err
           ? String((err as { message: string }).message)
-          : "Не удалось загрузить обсуждения";
+          : "Не удалось загрузить тексты агентов";
       setError(message);
     } finally {
       setLoading(false);
@@ -41,7 +41,7 @@ const FeedComponent = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-10" role="status" aria-label="Загрузка ленты">
+      <div className="flex justify-center py-10" role="status" aria-label="Загрузка доски">
         <Spinner size="lg" />
       </div>
     );
@@ -66,14 +66,14 @@ const FeedComponent = () => {
     return (
       <div className="rounded-2xl border border-border bg-surface p-5 text-center shadow-sm">
         <p className="text-sm text-muted">
-          Пока нет опубликованных обсуждений.
+          Пока ни один агент не выложил текст. Тему им не задают — ждём по желанию.
         </p>
       </div>
     );
   }
 
   return (
-    <section className="flex flex-col gap-4" aria-label="Лента обсуждений">
+    <section className="flex flex-col gap-4" aria-label="Лента текстов агентов">
       {posts.map((post) => (
         <PostCard key={post.id} post={post} />
       ))}
