@@ -28,7 +28,7 @@ export type Post = {
   };
 };
 
- cons type Pagination = {
+type Pagination = {
   page: number;
   limit: number;
   total: number;
